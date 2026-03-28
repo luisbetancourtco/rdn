@@ -31,7 +31,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     )
     await prisma.newsItem.update({
       where: { id: item.id },
-      data: { status: 'para_publicar', publishedAt: new Date() },
+      data: { status: 'publicada', publishedAt: new Date() },
     })
     return NextResponse.json({ ok: true, postId })
   } catch (err) {

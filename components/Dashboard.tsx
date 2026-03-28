@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import type { NewsItem } from '@prisma/client'
 import NewsCard from './NewsCard'
 
-type Tab = 'pendiente' | 'para_publicar' | 'descartada'
+type Tab = 'pendiente' | 'para_publicar' | 'descartada' | 'publicada'
 
 interface DashboardProps {
   initialItems: NewsItem[]
@@ -67,7 +67,8 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
     try {
       const res = await fetch('/api/ingestion/run', { method: 'POST' })
       const data = await res.json()
-      addToast(`Ingestión completada: ${data.created} nuevos, ${data.skipped} ya existentes.`)
+      const deletedMsg = data.deleted > 0 ? `, ${data.deleted} descartadas eliminadas` : ''
+      addToast(`Ingestión completada: ${data.created} nuevos, ${data.skipped} ya existentes${deletedMsg}.`)
       router.refresh()
     } catch {
       addToast('Error al ejecutar ingestión.', 'error')
@@ -90,12 +91,14 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
     { key: 'pendiente', label: 'Pendientes' },
     { key: 'para_publicar', label: 'Para publicar' },
     { key: 'descartada', label: 'Descartadas' },
+    { key: 'publicada', label: 'Publicadas' },
   ]
 
   const tabCounts = {
     pendiente: items.filter((i) => i.status === 'pendiente').length,
     para_publicar: items.filter((i) => i.status === 'para_publicar').length,
     descartada: items.filter((i) => i.status === 'descartada').length,
+    publicada: items.filter((i) => i.status === 'publicada').length,
   }
 
   return (

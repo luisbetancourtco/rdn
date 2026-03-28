@@ -34,7 +34,14 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
       const data = await res.json()
       setCaptionText(data.caption)
       setShowCaption(true)
-      onToast('Caption generado.')
+      // Auto-guardar el caption al generarlo por primera vez
+      await fetch(`/api/news/${item.id}/save-caption`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ caption: data.caption }),
+      })
+      onUpdate({ ...item, caption: data.caption })
+      onToast('Caption generado y guardado.')
     } catch {
       onToast('Error al generar caption.', 'error')
     } finally {
@@ -85,7 +92,7 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
         return
       }
       if (!res.ok) throw new Error()
-      onUpdate({ ...item, status: 'para_publicar', publishedAt: new Date() })
+      onUpdate({ ...item, status: 'publicada', publishedAt: new Date() })
       onToast('Publicado en LinkedIn.')
     } catch {
       onToast('Error al publicar.', 'error')

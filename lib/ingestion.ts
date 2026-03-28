@@ -2,7 +2,9 @@ import { prisma } from './prisma'
 import { fetchAllFeeds } from './rss'
 import { classifyItem } from './classifier'
 
-export async function runIngestion(maxAgeDays = 7): Promise<{ created: number; skipped: number }> {
+export async function runIngestion(maxAgeDays = 7): Promise<{ created: number; skipped: number; deleted: number }> {
+  const { count: deleted } = await prisma.newsItem.deleteMany({ where: { status: 'descartada' } })
+
   const items = await fetchAllFeeds(maxAgeDays)
   let created = 0
   let skipped = 0
@@ -33,5 +35,5 @@ export async function runIngestion(maxAgeDays = 7): Promise<{ created: number; s
     created++
   }
 
-  return { created, skipped }
+  return { created, skipped, deleted }
 }
