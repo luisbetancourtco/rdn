@@ -1,0 +1,6 @@
+{
+  "/dashboard/page": "app/dashboard/page.js",
+  "/api/linkedin/connect/route": "app/api/linkedin/connect/route.js",
+  "/api/linkedin/callback/route": "app/api/linkedin/callback/route.js",
+  "/api/news/[id]/publish/route": "app/api/news/[id]/publish/route.js"
+}

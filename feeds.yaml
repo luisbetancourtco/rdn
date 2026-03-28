@@ -1,0 +1,80 @@
+feeds:
+  - source: "Google Search Central"
+    url: "https://developers.google.com/search/blog/rss.xml"
+    category: "SEO / GEO"
+
+  - source: "Google Ads & Commerce"
+    url: "https://blog.google/products/ads-commerce/rss/"
+    category: "Publicidad paga"
+
+  - source: "Google Analytics"
+    url: "https://blog.google/products/marketingplatform/analytics/rss/"
+    category: "Analítica"
+
+  - source: "Google AI Blog"
+    url: "https://blog.google/technology/ai/rss/"
+    category: "IA"
+
+  - source: "Meta Newsroom"
+    url: "https://about.fb.com/news/feed/"
+    category: "Redes sociales"
+
+  - source: "Moz"
+    url: "https://moz.com/blog/feed"
+    category: "SEO / GEO"
+
+  - source: "Search Engine Journal"
+    url: "https://www.searchenginejournal.com/feed/"
+    category: "SEO / GEO"
+
+  - source: "Search Engine Land"
+    url: "https://searchengineland.com/feed"
+    category: "SEO / GEO"
+
+  - source: "MarTech"
+    url: "https://martech.org/feed/"
+    category: "Marketing"
+
+  - source: "Content Marketing Institute"
+    url: "https://contentmarketinginstitute.com/feed/"
+    category: "Contenido"
+
+  - source: "MarketingProfs"
+    url: "https://www.marketingprofs.com/rss/articles.rss"
+    category: "Marketing"
+
+  - source: "LinkedIn Blog"
+    url: "https://blog.linkedin.com/feed"
+    category: "Redes sociales"
+
+  - source: "TikTok Newsroom"
+    url: "https://newsroom.tiktok.com/en-us/rss.xml"
+    category: "Redes sociales"
+
+  - source: "YouTube Blog"
+    url: "https://blog.youtube/rss/"
+    category: "Redes sociales"
+
+  - source: "Zapier Blog"
+    url: "https://blog.zapier.com/feed/"
+    category: "Automatización"
+
+  - source: "n8n Blog"
+    url: "https://blog.n8n.io/rss.xml"
+    category: "Automatización"
+
+  - source: "Anthropic"
+    url: "https://www.anthropic.com/news/rss.xml"
+    category: "IA"
+
+  - source: "OpenAI Blog"
+    url: "https://openai.com/blog/rss.xml"
+    category: "IA"
+
+  - source: "Reforge"
+    url: "https://www.reforge.com/blog/rss.xml"
+    category: "Growth"
+
+  - source: "HubSpot Marketing"
+    url: "https://blog.hubspot.com/marketing/rss.xml"
+    category: "Marketing"
