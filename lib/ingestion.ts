@@ -3,7 +3,10 @@ import { fetchAllFeeds } from './rss'
 import { classifyItem } from './classifier'
 
 export async function runIngestion(maxAgeDays = 7): Promise<{ created: number; skipped: number; deleted: number }> {
-  const { count: deleted } = await prisma.newsItem.deleteMany({ where: { status: 'descartada' } })
+  const cutoff = new Date(Date.now() - maxAgeDays * 24 * 60 * 60 * 1000)
+  const { count: deleted } = await prisma.newsItem.deleteMany({
+    where: { status: 'descartada', publishedAt: { lt: cutoff } },
+  })
 
   const items = await fetchAllFeeds(maxAgeDays)
   let created = 0
