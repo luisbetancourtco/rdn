@@ -57,11 +57,6 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
     return true
   })
 
-  async function handleLogout() {
-    await fetch('/api/auth/logout', { method: 'POST' })
-    router.push('/login')
-  }
-
   async function handleIngestion() {
     setIngesting(true)
     try {
@@ -102,18 +97,7 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
-      <nav className="bg-gray-900 text-white px-4 py-3 flex items-center justify-between">
-        <span className="font-bold text-lg">📡 Radar</span>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-gray-300 hover:text-white transition-colors"
-        >
-          Salir
-        </button>
-      </nav>
-
+    <div>
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Controls bar */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
