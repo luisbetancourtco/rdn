@@ -10,15 +10,15 @@ interface NewsCardProps {
   onToast: (message: string, type?: 'success' | 'error') => void
 }
 
-const relevanceBadge: Record<string, string> = {
-  alta: 'bg-green-100 text-green-800',
-  media: 'bg-yellow-100 text-yellow-800',
-  baja: 'bg-gray-100 text-gray-600',
+const relevanceChip: Record<string, string> = {
+  alta: 'bg-md-success-container text-md-on-success-container',
+  media: 'bg-md-tertiary-container text-md-on-tertiary-container',
+  baja: 'bg-md-surface-container-highest text-md-on-surface-variant',
 }
 
-const typeBadge: Record<string, string> = {
-  novedad: 'bg-blue-100 text-blue-800',
-  evergreen: 'bg-purple-100 text-purple-800',
+const typeChip: Record<string, string> = {
+  novedad: 'bg-md-primary-container text-md-on-primary-container',
+  evergreen: 'bg-md-tertiary-container text-md-on-tertiary-container',
 }
 
 export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }: NewsCardProps) {
@@ -34,7 +34,6 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
       const data = await res.json()
       setCaptionText(data.caption)
       setShowCaption(true)
-      // Auto-guardar el caption al generarlo por primera vez
       await fetch(`/api/news/${item.id}/save-caption`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,31 +107,35 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
     : ''
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+    <div className="bg-md-surface-container-lowest rounded-md-md border border-md-outline-variant p-5 shadow-md-1 hover:shadow-md-2 transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-2">
         <a
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-base font-semibold text-blue-700 hover:underline leading-snug"
+          className="text-base font-medium text-md-primary hover:text-md-on-primary-container leading-snug transition-colors"
         >
           {item.title}
         </a>
-        <span className="text-xs text-gray-400 whitespace-nowrap mt-1">{pubDate}</span>
+        <span className="text-xs text-md-on-surface-variant whitespace-nowrap mt-1">{pubDate}</span>
       </div>
 
-      {/* Badges */}
-      <div className="flex flex-wrap gap-1.5 mb-3">
-        <span className="text-xs bg-gray-100 text-gray-700 rounded px-2 py-0.5">{item.source}</span>
-        <span className="text-xs bg-gray-100 text-gray-700 rounded px-2 py-0.5">{item.category}</span>
+      {/* Chips */}
+      <div className="flex flex-wrap gap-2 mb-3">
+        <span className="text-xs bg-md-surface-container-high text-md-on-surface-variant rounded-md-sm px-3 py-1 font-medium">
+          {item.source}
+        </span>
+        <span className="text-xs bg-md-surface-container-high text-md-on-surface-variant rounded-md-sm px-3 py-1 font-medium">
+          {item.category}
+        </span>
         {item.type && (
-          <span className={`text-xs rounded px-2 py-0.5 ${typeBadge[item.type] ?? 'bg-gray-100 text-gray-600'}`}>
+          <span className={`text-xs rounded-md-sm px-3 py-1 font-medium ${typeChip[item.type] ?? 'bg-md-surface-container-high text-md-on-surface-variant'}`}>
             {item.type}
           </span>
         )}
         {item.relevance && (
-          <span className={`text-xs rounded px-2 py-0.5 ${relevanceBadge[item.relevance] ?? 'bg-gray-100 text-gray-600'}`}>
+          <span className={`text-xs rounded-md-sm px-3 py-1 font-medium ${relevanceChip[item.relevance] ?? 'bg-md-surface-container-high text-md-on-surface-variant'}`}>
             {item.relevance}
           </span>
         )}
@@ -140,12 +143,12 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
 
       {/* Summary */}
       {item.summary && (
-        <p className="text-sm text-gray-600 mb-2 leading-relaxed">{item.summary}</p>
+        <p className="text-sm text-md-on-surface-variant mb-2 leading-relaxed">{item.summary}</p>
       )}
 
       {/* Reason */}
       {item.reason && (
-        <p className="text-xs text-gray-400 italic mb-3">{item.reason}</p>
+        <p className="text-xs text-md-outline italic mb-3">{item.reason}</p>
       )}
 
       {/* Caption */}
@@ -155,33 +158,36 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
             value={captionText}
             onChange={(e) => setCaptionText(e.target.value)}
             rows={8}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-md-outline-variant rounded-md-sm px-4 py-3 text-sm font-mono resize-y bg-md-surface-container-lowest text-md-on-surface focus:outline-none focus:border-md-primary focus:ring-2 focus:ring-md-primary/20 transition-colors"
           />
-          <div className="text-xs text-gray-400 text-right mt-1">{captionText.length} caracteres</div>
+          <div className="text-xs text-md-on-surface-variant text-right mt-1">{captionText.length} caracteres</div>
         </div>
       )}
 
       {/* Actions */}
       <div className="flex flex-wrap gap-2">
+        {/* Tonal button */}
         <button
           onClick={handleGenerateCaption}
           disabled={generatingCaption}
-          className="text-xs border border-gray-300 rounded px-3 py-1.5 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          className="state-layer text-xs bg-md-secondary-container text-md-on-secondary-container rounded-md-xl px-4 py-2 font-medium disabled:opacity-50 transition-colors"
         >
           {generatingCaption ? 'Generando...' : '✨ Generar caption'}
         </button>
 
         {showCaption && (
           <>
+            {/* Outlined button */}
             <button
               onClick={handleCopyCaption}
-              className="text-xs border border-gray-300 rounded px-3 py-1.5 hover:bg-gray-50 transition-colors"
+              className="state-layer text-xs border border-md-outline text-md-on-surface-variant rounded-md-xl px-4 py-2 font-medium transition-colors"
             >
               Copiar
             </button>
+            {/* Filled button */}
             <button
               onClick={handleSaveCaption}
-              className="text-xs bg-blue-600 text-white rounded px-3 py-1.5 hover:bg-blue-700 transition-colors"
+              className="state-layer text-xs bg-md-primary text-md-on-primary rounded-md-xl px-4 py-2 font-medium shadow-md-1 hover:shadow-md-2 transition-all"
             >
               Guardar
             </button>
@@ -189,7 +195,7 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
               <button
                 onClick={handlePublish}
                 disabled={publishing}
-                className="text-xs bg-blue-800 text-white rounded px-3 py-1.5 hover:bg-blue-900 disabled:opacity-50 transition-colors"
+                className="state-layer text-xs bg-md-primary text-md-on-primary rounded-md-xl px-4 py-2 font-medium shadow-md-1 hover:shadow-md-2 disabled:opacity-50 disabled:shadow-none transition-all"
               >
                 {publishing ? 'Publicando...' : 'Publicar en LinkedIn'}
               </button>
@@ -202,7 +208,7 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
           {item.status !== 'para_publicar' && (
             <button
               onClick={() => handleStatus('para_publicar')}
-              className="text-xs border border-green-300 text-green-700 rounded px-3 py-1.5 hover:bg-green-50 transition-colors"
+              className="state-layer text-xs border border-md-outline text-md-success rounded-md-xl px-4 py-2 font-medium transition-colors"
             >
               Para publicar
             </button>
@@ -210,7 +216,7 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
           {item.status !== 'pendiente' && (
             <button
               onClick={() => handleStatus('pendiente')}
-              className="text-xs border border-gray-300 text-gray-600 rounded px-3 py-1.5 hover:bg-gray-50 transition-colors"
+              className="state-layer text-xs border border-md-outline text-md-on-surface-variant rounded-md-xl px-4 py-2 font-medium transition-colors"
             >
               Pendiente
             </button>
@@ -218,7 +224,7 @@ export default function NewsCard({ item, linkedInConnected, onUpdate, onToast }:
           {item.status !== 'descartada' && (
             <button
               onClick={() => handleStatus('descartada')}
-              className="text-xs border border-red-300 text-red-600 rounded px-3 py-1.5 hover:bg-red-50 transition-colors"
+              className="state-layer text-xs border border-md-outline text-md-error rounded-md-xl px-4 py-2 font-medium transition-colors"
             >
               Descartar
             </button>

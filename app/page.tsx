@@ -3,9 +3,8 @@ import { getSession } from '@/lib/session'
 
 export default async function Home() {
   const session = await getSession()
-  if (session.authenticated) {
-    redirect('/dashboard')
-  } else {
+  if (!session.authenticated) {
     redirect('/login')
   }
+  redirect('/diagnostico')
 }

@@ -98,14 +98,14 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
 
   return (
     <div>
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Controls bar */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           {/* Filters */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-1.5 text-sm bg-white"
+            className="border border-md-outline rounded-md-sm px-4 py-2.5 text-sm bg-md-surface-container-lowest text-md-on-surface focus:outline-none focus:border-md-primary focus:ring-2 focus:ring-md-primary/20 transition-colors"
           >
             <option value="">Todas las categorías</option>
             {categories.map((c) => (
@@ -116,7 +116,7 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-1.5 text-sm bg-white"
+            className="border border-md-outline rounded-md-sm px-4 py-2.5 text-sm bg-md-surface-container-lowest text-md-on-surface focus:outline-none focus:border-md-primary focus:ring-2 focus:ring-md-primary/20 transition-colors"
           >
             <option value="">Todos los tipos</option>
             <option value="novedad">Novedad</option>
@@ -129,14 +129,14 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
               isConnected ? (
                 <button
                   onClick={handleDisconnectLinkedIn}
-                  className="text-sm border border-gray-300 rounded px-3 py-1.5 hover:bg-gray-100 transition-colors"
+                  className="state-layer text-sm border border-md-outline rounded-md-xl px-5 py-2.5 text-md-on-surface-variant hover:bg-md-surface-container-high transition-colors font-medium"
                 >
                   ✓ LinkedIn conectado · Desconectar
                 </button>
               ) : (
                 <a
                   href="/api/linkedin/connect"
-                  className="text-sm bg-blue-700 text-white rounded px-3 py-1.5 hover:bg-blue-800 transition-colors"
+                  className="state-layer text-sm bg-md-primary text-md-on-primary rounded-md-xl px-5 py-2.5 font-medium shadow-md-1 hover:shadow-md-2 transition-all"
                 >
                   Conectar LinkedIn
                 </a>
@@ -147,28 +147,30 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
             <button
               onClick={handleIngestion}
               disabled={ingesting}
-              className="text-sm bg-gray-800 text-white rounded px-3 py-1.5 hover:bg-gray-900 disabled:opacity-50 transition-colors"
+              className="state-layer text-sm bg-md-primary text-md-on-primary rounded-md-xl px-5 py-2.5 font-medium shadow-md-1 hover:shadow-md-2 disabled:opacity-50 disabled:shadow-none transition-all"
             >
               {ingesting ? 'Ingiriendo...' : '↺ Correr ingestión'}
             </button>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1 border-b border-gray-200 mb-6">
+        {/* Tabs — M3 secondary tabs */}
+        <div className="flex bg-md-surface-container rounded-md-lg p-1 mb-6 gap-1">
           {tabs.map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
-              className={`px-4 py-2 text-sm font-medium rounded-t transition-colors ${
+              className={`state-layer flex-1 px-4 py-2.5 text-sm font-medium rounded-md-sm transition-all ${
                 activeTab === key
-                  ? 'bg-white border border-b-white border-gray-200 text-blue-600 -mb-px'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-md-surface-container-lowest text-md-primary shadow-md-1'
+                  : 'text-md-on-surface-variant hover:text-md-on-surface'
               }`}
             >
               {label}
-              <span className={`ml-2 text-xs rounded-full px-1.5 py-0.5 ${
-                activeTab === key ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-600'
+              <span className={`ml-2 text-xs rounded-full px-2 py-0.5 font-medium ${
+                activeTab === key
+                  ? 'bg-md-primary-container text-md-on-primary-container'
+                  : 'bg-md-surface-container-highest text-md-on-surface-variant'
               }`}>
                 {tabCounts[key]}
               </span>
@@ -178,11 +180,11 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
 
         {/* News cards */}
         {filteredItems.length === 0 ? (
-          <div className="text-center text-gray-400 py-16">
+          <div className="text-center text-md-on-surface-variant py-16 text-sm">
             No hay noticias en esta pestaña.
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {filteredItems.map((item) => (
               <NewsCard
                 key={item.id}
@@ -196,13 +198,15 @@ export default function Dashboard({ initialItems, linkedInConnected, hasLinkedIn
         )}
       </div>
 
-      {/* Toasts */}
-      <div className="fixed bottom-4 right-4 flex flex-col gap-2 z-50">
+      {/* Toasts — M3 snackbar */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-50">
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`px-4 py-3 rounded shadow-lg text-white text-sm max-w-sm ${
-              toast.type === 'error' ? 'bg-red-600' : 'bg-gray-800'
+            className={`px-6 py-3 rounded-md-sm shadow-md-3 text-sm font-medium max-w-md animate-[slideUp_0.2s_ease-out] ${
+              toast.type === 'error'
+                ? 'bg-md-error-container text-md-on-error-container'
+                : 'bg-md-inverse-surface text-md-inverse-on-surface'
             }`}
           >
             {toast.message}

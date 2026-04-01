@@ -3,7 +3,7 @@ import { loadFeeds } from './feeds'
 
 const parser = new Parser({
   timeout: 10000,
-  headers: { 'User-Agent': 'Radar/1.0 RSS Reader' },
+  headers: { 'User-Agent': 'Alfred/1.0 RSS Reader' },
 })
 
 const MAX_SUMMARY_LENGTH = 800

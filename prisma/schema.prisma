@@ -30,3 +30,180 @@ model Setting {
   key   String @unique
   value String
 }
+
+model User {
+  id                Int               @id @default(autoincrement())
+  email             String            @unique
+  name              String
+  passwordHash      String?
+  role              String            @default("alumno")
+  resetToken        String?           @unique
+  resetTokenExpiry  DateTime?
+
+  // Perfil extendido (migración WordPress)
+  firstName         String?
+  lastName          String?
+  username          String?
+  avatarUrl         String?
+  country           String?
+  city              String?
+
+  // Perfil de negocio
+  nombreNegocio     String?
+  urlNegocio        String?
+  descripcionNegocio String?
+  categoriaNegocio  String?
+
+  // Redes sociales
+  facebook          String?
+  instagram         String?
+  linkedin          String?
+  twitter           String?
+  youtube           String?
+
+  // Perfil de diagnóstico
+  jobstatus         Json?
+  objetivo          String?
+  skills            Json?
+  experience        Int?
+  medioContacto     Json?
+
+  // Metadata WordPress
+  wpUserId          Int?              @unique
+  registeredAt      DateTime?
+  lastLogin         DateTime?
+
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt @default(now())
+
+  access            CourseAccess[]
+  ledGroups         UserGroup[]       @relation("GroupLeader")
+  groupMembers      UserGroupMember[]
+  topicProgress     TopicProgress[]
+  asesorias         Asesoria[]
+}
+
+model UserGroup {
+  id        Int               @id @default(autoincrement())
+  name      String
+  leaderId  Int
+  leader    User              @relation("GroupLeader", fields: [leaderId], references: [id], onDelete: Cascade)
+  createdAt DateTime          @default(now())
+  members   UserGroupMember[]
+}
+
+model UserGroupMember {
+  groupId  Int
+  userId   Int
+  group    UserGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt DateTime  @default(now())
+
+  @@id([groupId, userId])
+}
+
+model TopicProgress {
+  userId      Int
+  topicId     Int
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic       Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([userId, topicId])
+}
+
+model CourseAccess {
+  userId    Int
+  courseId  Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  grantedAt DateTime @default(now())
+
+  @@id([userId, courseId])
+}
+
+model Course {
+  id           Int            @id @default(autoincrement())
+  slug         String         @unique
+  title        String
+  description  String?
+  content      String?
+  thumbnail    String?
+  status       String         @default("borrador")
+  isRequired   Boolean        @default(false)
+  unlocksAfter String?
+  order        Int            @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  modules      CourseModule[]
+  access       CourseAccess[]
+}
+
+model CourseModule {
+  id          Int      @id @default(autoincrement())
+  courseId    Int
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  slug        String
+  title       String
+  description String?
+  content     String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  topics      Topic[]
+
+  @@unique([courseId, slug])
+}
+
+model Topic {
+  id            Int             @id @default(autoincrement())
+  moduleId      Int
+  module        CourseModule    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  content       String?
+  videoUrl      String?
+  videoProvider String?
+  order         Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  materials     Material[]
+  progress      TopicProgress[]
+}
+
+model Material {
+  id        Int      @id @default(autoincrement())
+  topicId   Int
+  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  name      String
+  url       String
+  fileType  String?
+  createdAt DateTime @default(now())
+}
+
+model Asesoria {
+  id            Int             @id @default(autoincrement())
+  userId        Int
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime
+  startTime     String
+  endTime       String
+  duration      Int
+  recordingUrl  String?
+  summary       String?
+  fullSummary   String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  tasks         AsesoriaTask[]
+}
+
+model AsesoriaTask {
+  id          Int       @id @default(autoincrement())
+  asesoriaId  Int
+  asesoria    Asesoria  @relation(fields: [asesoriaId], references: [id], onDelete: Cascade)
+  description String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+}

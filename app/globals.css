@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-md-on-surface antialiased;
+  }
+}
+
+/* M3 state layers */
+@layer utilities {
+  .state-layer {
+    @apply relative overflow-hidden;
+  }
+  .state-layer::after {
+    content: '';
+    @apply absolute inset-0 pointer-events-none rounded-[inherit] transition-colors duration-200;
+    background: currentColor;
+    opacity: 0;
+  }
+  .state-layer:hover::after {
+    opacity: 0.08;
+  }
+  .state-layer:active::after {
+    opacity: 0.12;
+  }
+  .state-layer:focus-visible::after {
+    opacity: 0.12;
+  }
+}
+
+/* M3 scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c3c6cf;
+  border-radius: 4px;
+}
