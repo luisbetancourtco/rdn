@@ -62,7 +62,7 @@ export default function ProfileForm({ user }: { user: User }) {
     const f: Record<string, string> = {}
     for (const [k, v] of Object.entries(user)) {
       if (k === 'id') continue
-      f[k] = v ?? ''
+      f[k] = String(v ?? '')
     }
     return f
   })

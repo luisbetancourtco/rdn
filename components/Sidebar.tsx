@@ -6,24 +6,26 @@ import { usePathname, useRouter } from 'next/navigation'
 
 type NavItem = { href: string; label: string; icon: string }
 
+const ICON_BASE = 'https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons'
+
 const alwaysVisible: NavItem[] = [
-  { href: '/cursos', label: 'Cursos', icon: '🎓' },
-  { href: '/comunidad', label: 'Comunidad', icon: '🤝' },
+  { href: '/cursos', label: 'Cursos', icon: `${ICON_BASE}/courses.png` },
+  { href: '/comunidad', label: 'Comunidad', icon: `${ICON_BASE}/community.png` },
 ]
 
 const conditionalItems: NavItem[] = [
-  { href: '/asesorias', label: 'Asesorías', icon: '💬' },
-  { href: '/tareas', label: 'Tareas', icon: '✅' },
+  { href: '/asesorias', label: 'Asesorías', icon: `${ICON_BASE}/advisory.png` },
+  { href: '/tareas', label: 'Tareas', icon: `${ICON_BASE}/tasks.png` },
 ]
 
 const adminOnlyItems: NavItem[] = [
-  { href: '/diagnostico', label: 'Diagnóstico', icon: 'https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/diagnostic.png' },
-  { href: '/ruta', label: 'Ruta de aprendizaje', icon: 'https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/route.png' },
-  { href: '/bitacora', label: 'Bitácora', icon: '📓' },
-  { href: '/hitos', label: 'Hitos', icon: '🏆' },
-  { href: '/alfred', label: 'Alfred', icon: '🤖' },
-  { href: '/dashboard', label: 'Radar', icon: '📡' },
-  { href: '/usuarios', label: 'Usuarios', icon: '👥' },
+  { href: '/diagnostico', label: 'Diagnóstico', icon: `${ICON_BASE}/diagnostic.png` },
+  { href: '/ruta', label: 'Ruta de aprendizaje', icon: `${ICON_BASE}/route.png` },
+  { href: '/bitacora', label: 'Bitácora', icon: `${ICON_BASE}/journal.png` },
+  { href: '/hitos', label: 'Hitos', icon: `${ICON_BASE}/milestones.png` },
+  { href: '/alfred', label: 'Alfred', icon: `${ICON_BASE}/alfred-chat.png` },
+  { href: '/dashboard', label: 'Radar', icon: `${ICON_BASE}/radar.png` },
+  { href: '/usuarios', label: 'Usuarios', icon: `${ICON_BASE}/users.png` },
 ]
 
 export default function Sidebar({ role = 'alumno', hasAsesorias = false, hasTareas = false }: { role?: string; hasAsesorias?: boolean; hasTareas?: boolean }) {
@@ -55,53 +57,51 @@ export default function Sidebar({ role = 'alumno', hasAsesorias = false, hasTare
   if (role === 'admin') {
     // Admin sees everything
     navItems.push(
-      { href: '/diagnostico', label: 'Diagnóstico', icon: 'https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/diagnostic.png' },
-      { href: '/ruta', label: 'Ruta de aprendizaje', icon: 'https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/route.png' },
+      { href: '/diagnostico', label: 'Diagnóstico', icon: `${ICON_BASE}/diagnostic.png` },
+      { href: '/ruta', label: 'Ruta de aprendizaje', icon: `${ICON_BASE}/route.png` },
       ...alwaysVisible,
       ...conditionalItems,
-      { href: '/bitacora', label: 'Bitácora', icon: '📓' },
-      { href: '/hitos', label: 'Hitos', icon: '🏆' },
-      { href: '/alfred', label: 'Alfred', icon: '🤖' },
-      { href: '/dashboard', label: 'Radar', icon: '📡' },
-      { href: '/usuarios', label: 'Usuarios', icon: '👥' },
+      { href: '/bitacora', label: 'Bitácora', icon: `${ICON_BASE}/journal.png` },
+      { href: '/hitos', label: 'Hitos', icon: `${ICON_BASE}/milestones.png` },
+      { href: '/alfred', label: 'Alfred', icon: `${ICON_BASE}/alfred-chat.png` },
+      { href: '/dashboard', label: 'Radar', icon: `${ICON_BASE}/radar.png` },
+      { href: '/usuarios', label: 'Usuarios', icon: `${ICON_BASE}/users.png` },
     )
   } else {
-    navItems.push({ href: '/cursos', label: 'Cursos', icon: '🎓' })
+    navItems.push({ href: '/cursos', label: 'Cursos', icon: `${ICON_BASE}/courses.png` })
     if (hasAsesorias) navItems.push(conditionalItems[0])
     if (hasTareas) navItems.push(conditionalItems[1])
-    navItems.push({ href: '/comunidad', label: 'Comunidad', icon: '🤝' })
+    navItems.push({ href: '/comunidad', label: 'Comunidad', icon: `${ICON_BASE}/community.png` })
   }
 
   const navContent = (
     <>
       {/* Brand */}
-      <div className="px-4 py-5 flex items-center gap-3">
+      <div className="px-4 py-5 flex items-center">
         <img
-          src="https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/alfred-icon.png"
+          src="https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/logo-alfred.png"
           alt="Alfred"
-          width={32}
-          height={32}
-          className="rounded-md-sm"
+          width={400}
+          className="w-full max-w-[400px]"
         />
-        <span className="font-medium text-base text-md-on-surface tracking-wide">alfred</span>
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-1 space-y-0 overflow-y-auto">
         {navItems.map(({ href, label, icon }) => {
           const active = pathname.startsWith(href)
           return (
             <Link
               key={href}
               href={href}
-              className={`state-layer flex items-center gap-3 px-4 py-3 rounded-md-xl text-sm font-medium transition-colors ${
+              className={`state-layer flex items-center gap-3 px-4 py-1.5 rounded-md-xl text-sm font-medium transition-colors ${
                 active
                   ? 'bg-md-secondary-container text-md-on-secondary-container'
                   : 'text-md-on-surface-variant hover:bg-md-surface-container-highest'
               }`}
             >
               {icon.startsWith('http') ? (
-                <img src={icon} alt={label} width={40} height={40} className="w-10 h-10" />
+                <img src={icon} alt={label} width={40} height={40} className="w-[52px] h-[52px]" />
               ) : (
                 <span className="text-3xl">{icon}</span>
               )}
@@ -112,23 +112,23 @@ export default function Sidebar({ role = 'alumno', hasAsesorias = false, hasTare
       </nav>
 
       {/* Profile & Logout */}
-      <div className="px-3 py-4 space-y-1">
+      <div className="px-3 py-2 space-y-0">
         <Link
           href="/perfil"
-          className={`state-layer flex items-center gap-3 px-4 py-3 rounded-md-xl text-sm font-medium transition-colors ${
+          className={`state-layer flex items-center gap-3 px-4 py-1.5 rounded-md-xl text-sm font-medium transition-colors ${
             pathname.startsWith('/perfil')
               ? 'bg-md-secondary-container text-md-on-secondary-container'
               : 'text-md-on-surface-variant hover:bg-md-surface-container-highest'
           }`}
         >
-          <span className="text-3xl">👤</span>
+          <img src={`${ICON_BASE}/profile.png`} alt="Mi Perfil" width={40} height={40} className="w-[52px] h-[52px]" />
           <span>Mi Perfil</span>
         </Link>
         <button
           onClick={handleLogout}
-          className="state-layer flex items-center gap-3 text-sm text-md-on-surface-variant hover:text-md-on-surface px-4 py-3 rounded-md-xl transition-colors w-full text-left font-medium"
+          className="state-layer flex items-center gap-3 text-sm text-md-on-surface-variant hover:text-md-on-surface px-4 py-1.5 rounded-md-xl transition-colors w-full text-left font-medium"
         >
-          <span className="text-3xl">🚪</span>
+          <img src={`${ICON_BASE}/log-out.png`} alt="Salir" width={40} height={40} className="w-[52px] h-[52px]" />
           <span>Salir</span>
         </button>
       </div>
@@ -151,13 +151,11 @@ export default function Sidebar({ role = 'alumno', hasAsesorias = false, hasTare
           </svg>
         </button>
         <img
-          src="https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/alfred-icon.png"
+          src="https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/logo-alfred.png"
           alt="Alfred"
-          width={28}
-          height={28}
-          className="ml-3 rounded-md-sm"
+          width={120}
+          className="ml-3"
         />
-        <span className="ml-2 font-medium text-md-on-surface">alfred</span>
       </div>
 
       {/* Mobile overlay */}

@@ -17,9 +17,10 @@ export async function POST(req: Request) {
   const session = await getSession()
   if (!session.authenticated) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { title, description } = await req.json()
+  const { title, slug, description } = await req.json()
+  const generatedSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
   const course = await prisma.course.create({
-    data: { title, description },
+    data: { title, slug: generatedSlug, description },
   })
   return NextResponse.json(course, { status: 201 })
 }
