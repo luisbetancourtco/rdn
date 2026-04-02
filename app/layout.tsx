@@ -11,6 +11,9 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: 'Alfred — Monitor de Noticias',
   description: 'Monitor de noticias de marketing digital e IA',
+  icons: {
+    icon: 'https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/alfred-favicon.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

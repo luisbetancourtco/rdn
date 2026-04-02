@@ -6,9 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Framework**: Next.js 14 (App Router) + TypeScript
 - **Database**: Supabase (PostgreSQL) via Prisma ORM
-- **Storage**: Supabase Buckets (thumbnails, avatars, course materials)
+- **Storage**: Supabase Buckets (thumbnails, avatars, course materials, icons)
 - **Styles**: Tailwind CSS with Material Design 3 custom tokens
 - **Auth**: iron-session (encrypted cookies, 30-day expiry) + bcryptjs
+- **Email**: Nodemailer via Google Workspace SMTP
 - **AI**: Anthropic Claude SDK (classification + caption generation)
 - **Deploy**: Vercel (with Cron Jobs)
 
@@ -27,7 +28,7 @@ npm run lint             # ESLint
 
 # Trigger ingestion manually (app must be running)
 curl -X POST http://localhost:3000/api/ingestion/run \
-  -H "Cookie: radar_session=<your-session-cookie>"
+  -H "Cookie: alfred_session=<your-session-cookie>"
 ```
 
 There is no test suite yet.
@@ -82,7 +83,7 @@ app/
     auth/
       login/route.ts              — POST: email+password auth via bcrypt
       logout/route.ts             — POST: destroy session
-      forgot-password/route.ts    — POST: generate reset token (1h expiry)
+      forgot-password/route.ts    — POST: generate reset token (1h expiry), send email via Nodemailer
       reset-password/route.ts     — POST: validate token, update password
       select-user/route.ts        — POST: admin impersonation (stores original session)
       stop-impersonate/route.ts   — POST: restore admin session
@@ -131,11 +132,12 @@ lib/
   linkedin.ts        — OAuth helpers + ugcPosts API call
   ingestion.ts       — orchestrates: delete old discarded → fetch feeds → classify → db insert
   supabase.ts        — singleton Supabase client (service role key)
+  mail.ts            — Nodemailer transporter (Google Workspace SMTP) + sendPasswordResetEmail()
 
 components/
   Dashboard.tsx             — news tabs, filters, toasts, ingestion trigger, LinkedIn connect
   NewsCard.tsx              — caption workflow, status buttons, publish button
-  Sidebar.tsx               — responsive sidebar (desktop sticky + mobile drawer), role-based nav
+  Sidebar.tsx               — responsive sidebar (desktop sticky + mobile drawer), role-based nav, custom PNG icons from Supabase
   ImpersonationBanner.tsx   — fixed top banner during admin impersonation
   lms/
     CourseManager.tsx       — admin course list with create, reorder
@@ -226,8 +228,14 @@ AsesoriaTask    — asesoriaId, description, completed, completedAt
 - /comunidad shows two tabs: Miembros (user directory grid with search + profile modal) and WhatsApp
 - Profile modal shows public info: name, location, business, objective, social links
 
+**Password Recovery:**
+- User requests reset at /recuperar → POST /api/auth/forgot-password
+- Generates random token (1h expiry), stores in User.resetToken/resetTokenExpiry
+- Sends email via Nodemailer (Google Workspace SMTP) with reset link
+- User clicks link → /recuperar/[token] → POST /api/auth/reset-password validates token and updates password
+
 **Authentication & Impersonation:**
-- Login: email + bcrypt password → iron-session cookie
+- Login: email + bcrypt password → iron-session cookie (name: `alfred_session`)
 - Session fields: `authenticated`, `userId`, `userName`, `userRole`
 - Impersonation: admin clicks "Ingresar como este usuario" → session stores `originalUserId/Name/Role`, sets `impersonating: true`, switches to student's identity
 - All layouts show `ImpersonationBanner` when `session.impersonating === true`
@@ -257,6 +265,8 @@ SUPABASE_URL                  — Supabase project URL (for storage)
 SUPABASE_SERVICE_ROLE_KEY     — Supabase service role (for storage)
 SESSION_SECRET_KEY            — 32+ char key for iron-session encryption
 ANTHROPIC_API_KEY             — Claude API key
+SMTP_USER                     — Google Workspace email for sending (password reset, etc.)
+SMTP_PASS                     — Google App Password for SMTP
 LINKEDIN_CLIENT_ID            — LinkedIn OAuth (optional)
 LINKEDIN_CLIENT_SECRET        — LinkedIn OAuth (optional)
 LINKEDIN_REDIRECT_URI         — LinkedIn OAuth callback URL

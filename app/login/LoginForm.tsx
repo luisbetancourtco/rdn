@@ -24,7 +24,7 @@ export default function LoginForm() {
 
     if (res.ok) {
       const data = await res.json()
-      router.push('/diagnostico')
+      router.push('/inicio')
       return
     } else {
       const data = await res.json()

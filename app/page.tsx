@@ -6,5 +6,5 @@ export default async function Home() {
   if (!session.authenticated) {
     redirect('/login')
   }
-  redirect('/diagnostico')
+  redirect('/inicio')
 }

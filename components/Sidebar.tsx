@@ -54,23 +54,29 @@ export default function Sidebar({ role = 'alumno', hasAsesorias = false, hasTare
   }
 
   const navItems: NavItem[] = []
+  // Inicio is always first
+  navItems.push({ href: '/inicio', label: 'Inicio', icon: `${ICON_BASE}/home.png` })
+
   if (role === 'admin') {
-    // Admin sees everything
+    // Admin sees everything in canonical order
     navItems.push(
       { href: '/diagnostico', label: 'Diagnóstico', icon: `${ICON_BASE}/diagnostic.png` },
       { href: '/ruta', label: 'Ruta de aprendizaje', icon: `${ICON_BASE}/route.png` },
-      ...alwaysVisible,
-      ...conditionalItems,
+      { href: '/cursos', label: 'Cursos', icon: `${ICON_BASE}/courses.png` },
+      { href: '/asesorias', label: 'Asesorías', icon: `${ICON_BASE}/advisory.png` },
+      { href: '/tareas', label: 'Tareas', icon: `${ICON_BASE}/tasks.png` },
       { href: '/bitacora', label: 'Bitácora', icon: `${ICON_BASE}/journal.png` },
-      { href: '/hitos', label: 'Hitos', icon: `${ICON_BASE}/milestones.png` },
+      { href: '/hitos', label: 'Logros', icon: `${ICON_BASE}/milestones.png` },
+      { href: '/comunidad', label: 'Comunidad', icon: `${ICON_BASE}/community.png` },
       { href: '/alfred', label: 'Alfred', icon: `${ICON_BASE}/alfred-chat.png` },
       { href: '/dashboard', label: 'Radar', icon: `${ICON_BASE}/radar.png` },
       { href: '/usuarios', label: 'Usuarios', icon: `${ICON_BASE}/users.png` },
     )
   } else {
+    // Student: cursos, conditional asesorías/tareas, comunidad
     navItems.push({ href: '/cursos', label: 'Cursos', icon: `${ICON_BASE}/courses.png` })
-    if (hasAsesorias) navItems.push(conditionalItems[0])
-    if (hasTareas) navItems.push(conditionalItems[1])
+    if (hasAsesorias) navItems.push({ href: '/asesorias', label: 'Asesorías', icon: `${ICON_BASE}/advisory.png` })
+    if (hasTareas) navItems.push({ href: '/tareas', label: 'Tareas', icon: `${ICON_BASE}/tasks.png` })
     navItems.push({ href: '/comunidad', label: 'Comunidad', icon: `${ICON_BASE}/community.png` })
   }
 
@@ -94,7 +100,7 @@ export default function Sidebar({ role = 'alumno', hasAsesorias = false, hasTare
             <Link
               key={href}
               href={href}
-              className={`state-layer flex items-center gap-3 px-4 py-1.5 rounded-md-xl text-sm font-medium transition-colors ${
+              className={`state-layer flex items-center gap-3 px-4 py-[4.8px] rounded-md-xl text-sm font-medium transition-colors ${
                 active
                   ? 'bg-md-secondary-container text-md-on-secondary-container'
                   : 'text-md-on-surface-variant hover:bg-md-surface-container-highest'

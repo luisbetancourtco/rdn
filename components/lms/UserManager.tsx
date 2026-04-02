@@ -135,7 +135,7 @@ export default function UserManager({ initialUsers, allCourses }: UserManagerPro
       body: JSON.stringify({ userId }),
     })
     if (res.ok) {
-      router.push('/diagnostico')
+      router.push('/inicio')
       router.refresh()
     }
     setImpersonating(null)
