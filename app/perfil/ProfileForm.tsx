@@ -69,6 +69,9 @@ export default function ProfileForm({ user }: { user: User }) {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
+  const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' })
+  const [savingPassword, setSavingPassword] = useState(false)
+  const [passwordToast, setPasswordToast] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   async function handleAvatarUpload(file: File) {
@@ -100,6 +103,38 @@ export default function ProfileForm({ user }: { user: User }) {
 
   function onChange(name: string, value: string) {
     setForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  async function handlePasswordSave() {
+    setPasswordToast(null)
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordToast('La contraseña debe tener al menos 6 caracteres')
+      return
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordToast('Las contraseñas no coinciden')
+      return
+    }
+    setSavingPassword(true)
+    try {
+      const res = await fetch(`/api/users/${user.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: passwordForm.newPassword }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        setPasswordToast(data.error || 'Error al cambiar contraseña')
+      } else {
+        setPasswordToast('Contraseña actualizada')
+        setPasswordForm({ newPassword: '', confirmPassword: '' })
+      }
+    } catch {
+      setPasswordToast('Error de conexión')
+    } finally {
+      setSavingPassword(false)
+      setTimeout(() => setPasswordToast(null), 3000)
+    }
   }
 
   async function handleSave() {
@@ -185,6 +220,49 @@ export default function ProfileForm({ user }: { user: User }) {
             <Field label="Correo electrónico" name="email" value={form.email} onChange={onChange} type="email" placeholder="tu@email.com" />
             <Field label="País" name="country" value={form.country} onChange={onChange} placeholder="Ej: Colombia" />
             <Field label="Ciudad" name="city" value={form.city} onChange={onChange} placeholder="Ej: Bogotá" />
+          </div>
+        </section>
+
+        {/* Password */}
+        <section className="bg-md-surface-container-lowest rounded-md-md border border-md-outline-variant shadow-md-1 p-6">
+          <h2 className="text-sm font-medium text-md-on-surface mb-4">Contraseña</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-md-on-surface-variant mb-1.5">Nueva contraseña</label>
+              <input
+                type="password"
+                value={passwordForm.newPassword}
+                onChange={e => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
+                placeholder="Mínimo 6 caracteres"
+                autoComplete="new-password"
+                className="w-full px-3 py-2.5 text-sm bg-md-surface-container-lowest border border-md-outline-variant rounded-md-sm focus:outline-none focus:border-md-primary focus:ring-1 focus:ring-md-primary text-md-on-surface placeholder:text-md-outline"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-md-on-surface-variant mb-1.5">Confirmar contraseña</label>
+              <input
+                type="password"
+                value={passwordForm.confirmPassword}
+                onChange={e => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                placeholder="Repite la contraseña"
+                autoComplete="new-password"
+                className="w-full px-3 py-2.5 text-sm bg-md-surface-container-lowest border border-md-outline-variant rounded-md-sm focus:outline-none focus:border-md-primary focus:ring-1 focus:ring-md-primary text-md-on-surface placeholder:text-md-outline"
+              />
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-4">
+            <button
+              onClick={handlePasswordSave}
+              disabled={savingPassword || !passwordForm.newPassword}
+              className="state-layer bg-md-secondary-container text-md-on-secondary-container px-4 py-2 rounded-md-xl text-sm font-medium disabled:opacity-50 transition-colors"
+            >
+              {savingPassword ? 'Guardando...' : 'Cambiar contraseña'}
+            </button>
+            {passwordToast && (
+              <span className={`text-sm font-medium ${passwordToast.includes('Error') || passwordToast.includes('error') || passwordToast.includes('coinciden') || passwordToast.includes('menos') ? 'text-md-error' : 'text-md-primary'}`}>
+                {passwordToast}
+              </span>
+            )}
           </div>
         </section>
 

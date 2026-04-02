@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import bcrypt from 'bcryptjs'
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/prisma'
 
@@ -27,6 +28,14 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (body[field] !== undefined) {
       data[field] = body[field]?.trim() || null
     }
+  }
+
+  // Handle password change
+  if (body.password) {
+    if (body.password.length < 6) {
+      return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres' }, { status: 400 })
+    }
+    ;(data as Record<string, string | null>).passwordHash = await bcrypt.hash(body.password, 10)
   }
 
   try {

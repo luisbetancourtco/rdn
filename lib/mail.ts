@@ -17,8 +17,11 @@ export async function sendPasswordResetEmail(to: string, resetUrl: string) {
     subject: 'Recuperar contraseña — Alfred',
     html: `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <img src="https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/logo-alfred.png" alt="Alfred" style="max-width: 200px;" />
+        </div>
         <h2>Recuperar contraseña</h2>
-        <p>Recibimos una solicitud para restablecer tu contraseña.</p>
+        <p>Recibí una solicitud para restablecer tu contraseña.</p>
         <p>
           <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background: #6750A4; color: #fff; text-decoration: none; border-radius: 8px;">
             Restablecer contraseña
