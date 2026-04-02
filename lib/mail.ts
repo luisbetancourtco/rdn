@@ -10,20 +10,46 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-export async function sendPasswordResetEmail(to: string, resetUrl: string) {
+const LOGO_URL = 'https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/logo-alfred.png'
+const FROM = '"Alfred" <alfred@luisbetancourt.co>'
+
+export async function sendMagicLinkEmail(to: string, magicUrl: string) {
   await transporter.sendMail({
-    from: `"Alfred" <${process.env.SMTP_USER}>`,
+    from: FROM,
     to,
-    subject: 'Recuperar contraseña — Alfred',
+    subject: 'Alfred: Enlace de acceso',
     html: `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 24px;">
-          <img src="https://rdkfjppgbvthvtjdkcgi.supabase.co/storage/v1/object/public/icons/logo-alfred.png" alt="Alfred" style="max-width: 200px;" />
+          <img src="${LOGO_URL}" alt="Alfred" style="max-width: 200px;" />
+        </div>
+        <h2>Enlace de acceso</h2>
+        <p>Recibí una solicitud para iniciar sesión en Alfred.</p>
+        <p>
+          <a href="${magicUrl}" style="display: inline-block; padding: 12px 24px; background: #fcbe49; color: #fff; text-decoration: none; border-radius: 8px;">
+            Ingresar a Alfred
+          </a>
+        </p>
+        <p style="color: #666; font-size: 14px;">Este enlace expira en 15 minutos. Si no solicitaste este acceso, ignora este correo.</p>
+      </div>
+    `,
+  })
+}
+
+export async function sendPasswordResetEmail(to: string, resetUrl: string) {
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    subject: 'Alfred: Recuperación de contraseña',
+    html: `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <img src="${LOGO_URL}" alt="Alfred" style="max-width: 200px;" />
         </div>
         <h2>Recuperar contraseña</h2>
         <p>Recibí una solicitud para restablecer tu contraseña.</p>
         <p>
-          <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background: #6750A4; color: #fff; text-decoration: none; border-radius: 8px;">
+          <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background: #fcbe49; color: #fff; text-decoration: none; border-radius: 8px;">
             Restablecer contraseña
           </a>
         </p>

@@ -39,6 +39,8 @@ model User {
   role              String            @default("alumno")
   resetToken        String?           @unique
   resetTokenExpiry  DateTime?
+  loginToken        String?           @unique
+  loginTokenExpiry  DateTime?
 
   // Perfil extendido (migración WordPress)
   firstName         String?

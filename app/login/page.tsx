@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/session'
 import LoginForm from './LoginForm'
@@ -20,7 +21,9 @@ export default async function LoginPage() {
           <h1 className="text-xl font-medium text-md-on-surface">Plataforma de Cursos</h1>
           <p className="text-md-on-surface-variant text-sm mt-0.5">Inicia sesión para continuar</p>
         </div>
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   )
